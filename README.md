@@ -203,6 +203,8 @@ The monitor plays `alarm.mp3` when results are detected. You can replace this fi
 
 3. The next time you run the monitor, it will play your custom alarm
 
+4. If you wish to exit, press CTRL + C, the program will give you a summary of all requests made until that point.
+
 
 #### Tips for Creating an Alarm Audio File
 
@@ -296,6 +298,18 @@ pip install -r requirements.txt
 2. **Keep Your Device On**: Your computer must remain powered on and connected to the internet for the monitor to work.
 3. **Volume Up**: Ensure your speakers/headphones are connected and volume is audible so you hear the alarm.
 4. **Quick Action**: When the alarm sounds, immediately open the NTA website to check your results before the rush crashes the server.
+
+
+## Contact
+
+If you run into any issues with the program not working on your computer even after setup, please contact either white.9igga OR .sciron on DISCORD only.
+Please do not contact us for guide on installation, the README has all commands mentioned in it. PLease Contact only if you receive any error while and/or after running the program.
+
+
+THANK YOU AND ALL THE BEST FOR RESULTS!
+
+Cheers,
+white.9igga and .sciron
 
 
 
