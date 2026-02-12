@@ -1,12 +1,15 @@
 #!/bin/bash
 
-PY="./.venv/bin/python"
+DIR="$(cd "$(dirname "$0")" && pwd)"
+PY="$DIR/.venv/bin/python"
 
 if [ ! -f "$PY" ]; then
-echo "Virtual environment not found."
-echo "Create it with: python3 -m venv .venv"
-exit 1
+    echo "Virtual environment not found at $PY"
+    echo "Create it with: python3 -m venv .venv"
+    exit 1
 fi
 
-"$PY" jee_results_monitor.py &
-"$PY" Main_tracker.py &
+# Run scripts in the background
+"$PY" "$DIR/jee_results_monitor.py" &
+"$PY" "$DIR/Main_tracker.py" &
+wait
