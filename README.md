@@ -24,7 +24,7 @@ A comprehensive monitoring and tracking system for JEE (Joint Entrance Examinati
 
 ### How It Works
 
-The monitoring scripts run continuously in the background and check the NTA website at regular intervals. When results are detected to be live, your computer will **play an audio alarm** — a recording saying **"RESULTS ARE OUT"** to immediately notify you.
+The monitoring scripts run continuously in the background and check the NTA website at regular intervals (default: every 30 seconds). When results are detected to be live, your computer will **play an audio alarm** — a recording saying **"RESULTS ARE OUT"** to immediately notify you.
 
 **Set it and forget it**: Start the monitor before the expected result date, let it run in the background, and you'll get an instant alert the moment results are available. By the time you hear the alarm and open the website, you'll be among the first to access the results page before it crashes.
 
@@ -83,6 +83,20 @@ fackNTA/
 - `lxml` - XML/HTML parsing
 
 ## Installation
+
+### Step 0: Open Command Prompt and Run as Administrator
+
+Open CMD and install Python either through the Official Website Installer or using CMD below:
+Official Website recommended. Remember to select "Add to PATH" during Installation.
+
+```python install
+winget install Python.Python.3
+```
+
+Install Git as well similarly from the official website. Also select "Add to PATH" option.
+
+*** SKIP STEP 0 IF YOU HAVE PYTHON AND GIT INSTALLED**
+
 
 ### Step 1: Clone/Download the Project
 
@@ -303,8 +317,8 @@ pip install -r requirements.txt
 
 ## Contact
 
-If you run into any issues with the program not working on your computer even after setup, please contact either white.9igga OR .sciron on DISCORD only.
-Please do not contact us for guide on installation, the README has all commands mentioned in it. PLease Contact only if you receive any error while and/or after running the program.
+If you run into any issues with the program not working on your computer even after setup, please contact either "white.9igga" OR ".sciron" on DISCORD only.
+Please do not contact us for guide on installation, the README has all commands mentioned in it. Please Contact only if you receive any error while and/or after running the program.
 
 
 THANK YOU AND ALL THE BEST FOR RESULTS!
