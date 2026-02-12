@@ -14,6 +14,7 @@ A comprehensive monitoring and tracking system for JEE (Joint Entrance Examinati
 - [Usage](#usage)
 - [Configuration](#configuration)
 - [Troubleshooting](#troubleshooting)
+- [Contact](#contact)
 
 ## Motivation
 
