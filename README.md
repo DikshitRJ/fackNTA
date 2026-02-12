@@ -113,12 +113,12 @@ Run the following command to create a virtual environment, activate it, and inst
 
 **Windows:**
 ```bash
-python -m venv .venv && .venv\Scripts\activate && pip install -r requirements.txt
+py -3.8 -m venv .venv && .venv\Scripts\activate && python -m pip install -r requirements.txt
 ```
 
 **Linux/macOS:**
 ```bash
-python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt
+python3.8 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt
 ```
 
 ### Step 3: Verify Installation
