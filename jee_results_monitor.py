@@ -70,7 +70,7 @@ ALARM_FILE = "alarm.mp3"
 # How many consecutive "change detected" checks are required before alert
 CONFIRMATION_THRESHOLD = 3
 # Seconds between rapid confirmation re-checks
-CONFIRMATION_INTERVAL  = 10
+CONFIRMATION_INTERVAL  = 60
 # Minimum seconds between alert bursts
 ALERT_COOLDOWN_SECS    = 300
 
@@ -776,3 +776,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
