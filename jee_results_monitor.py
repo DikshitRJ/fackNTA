@@ -3,6 +3,10 @@ import sys, io
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
 
+# Clean logs by disabling the unverified certificate thing
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 """
 JEE Main 2026 Session 1 — Results Monitor  (v2 — structural fingerprinting)
 =============================================================================
@@ -93,45 +97,30 @@ _HEADERS = {
 }
 
 
+# This object acts like a browser tab, keeping cookies alive
+session = requests.Session()
+session.headers.update(_HEADERS)
+
 def http_get(path, host=BASE_HOST):
-    """
-    Raw HTTPS GET.  Returns (status, headers_dict, body).
-    Does NOT follow redirects so we can inspect 302s ourselves.
-    """
-    conn = HTTPSConnection(host, context=_ssl_ctx(), timeout=20)
+    url = f"https://{host}{path}"
     try:
-        conn.request("GET", path, headers=_HEADERS)
-        resp = conn.getresponse()
-        body = resp.read().decode("utf-8", errors="replace")
-        hdrs = {k.lower(): v for k, v in resp.getheaders()}
-        return resp.status, hdrs, body
+        # allow_redirects=False so we can detect if NTA 
+        # is trying to send us to an error page (302 redirect)
+        resp = session.get(url, timeout=20, allow_redirects=False, verify=False)
+        hdrs = {k.lower(): v for k, v in resp.headers.items()}
+        return resp.status_code, hdrs, resp.text
     except Exception as e:
         return None, {}, str(e)
-    finally:
-        conn.close()
-
 
 def http_post(path, form_data, host=BASE_HOST):
-    """
-    Raw HTTPS POST (application/x-www-form-urlencoded).
-    Returns (status, headers_dict, body).
-    Does NOT follow redirects.
-    """
-    encoded = urlencode(form_data)
-    conn = HTTPSConnection(host, context=_ssl_ctx(), timeout=20)
+    """Sends POST data using the cookies from the previous GET"""
+    url = f"https://{host}{path}"
     try:
-        hdrs = dict(_HEADERS)
-        hdrs["Content-Type"] = "application/x-www-form-urlencoded"
-        hdrs["Content-Length"] = str(len(encoded))
-        conn.request("POST", path, body=encoded, headers=hdrs)
-        resp = conn.getresponse()
-        body = resp.read().decode("utf-8", errors="replace")
-        rhdrs = {k.lower(): v for k, v in resp.getheaders()}
-        return resp.status, rhdrs, body
+        resp = session.post(url, data=form_data, timeout=20, allow_redirects=False, verify=False)
+        rhdrs = {k.lower(): v for k, v in resp.headers.items()}
+        return resp.status_code, rhdrs, resp.text
     except Exception as e:
         return None, {}, str(e)
-    finally:
-        conn.close()
 
 
 def get_response_signature(url):
@@ -478,10 +467,10 @@ def load_state():
         "baseline_skeleton": None,
         "baseline_hash": None,
         "baseline_post_sig": None,
+        "baseline_fp_sig": None,  #save to json
         "consecutive_detections": 0,
         "last_alert_time": None,
     }
-
 
 def save_state(state):
     with open(STATE_FILE, "w") as f:
@@ -527,7 +516,6 @@ def run_check(state, sound_enabled=True):
     current_hash = skeleton_hash(current_skel)
     
 
-
     # 3) Baseline handling
     if state["baseline_skeleton"] is None:
         log(f"First run — capturing baseline (hash: {current_hash})")
@@ -541,12 +529,7 @@ def run_check(state, sound_enabled=True):
         return False
 
     baseline_skel = state["baseline_skeleton"]
-    baseline_fp_sig = None
-    for a in baseline_skel.get("anchors", []):
-        t = a.get("text","").lower()
-        if "forgot" in t and "password" in t:
-            baseline_fp_sig = get_response_signature(a["href"])
-            break
+
 
     # 4) Run all detection layers
     layers = []
@@ -572,10 +555,10 @@ def run_check(state, sound_enabled=True):
     score7, msg7 = layer_forgot_password_link(baseline_skel, current_skel)
     layers.append(("ForgotLink", score7, msg7))
     score8, msg8 = layer_forgot_password_content(
-    baseline_skel,
-    current_skel,
-    baseline_fp_sig
-)
+            baseline_skel,
+            current_skel,
+            state.get("baseline_fp_sig") #FIX: Use the permanent JSON memory
+        )
     layers.append(("ForgotPage", score8, msg8))
 
 
