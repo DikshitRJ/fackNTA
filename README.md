@@ -69,7 +69,7 @@ fackNTA/
 
 ## Requirements
 
-- **Python**: 3.8 or higher
+- **Python**: 3.8 to 3.13
 - **Operating System**: Windows, macOS, or Linux
 - **Internet Connection**: Required for monitoring NTA website
 - **Dependencies**: Listed in `requirements.txt`
@@ -113,12 +113,12 @@ Run the following command to create a virtual environment, activate it, and inst
 
 **Windows:**
 ```bash
-py -3.8 -m venv .venv && .venv\Scripts\activate && python -m pip install -r requirements.txt
+py -3.13 -m venv .venv && .venv\Scripts\activate && python -m pip install -r requirements.txt
 ```
 
 **Linux/macOS:**
 ```bash
-python3.8 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt
+python3.13 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt
 ```
 
 ### Step 3: Verify Installation
