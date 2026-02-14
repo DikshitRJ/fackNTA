@@ -402,17 +402,20 @@ def layer_forgot_password_content(baseline_skel, current_skel, baseline_sig):
 
     href = find_href(current_skel)
     if not href:
-        return 0, "Forgot-password link not found"
+        return 0, "Forgot-password link not found", None # Added None
 
     current_sig = get_response_signature(href)
 
     if "error" in current_sig:
-        return 10, f"Error fetching forgot page: {current_sig['error']}"
+        return 0, f"Forgot page error: {current_sig['error']}", baseline_sig # Return old sig on error
+
+    if baseline_sig is None:
+        return 0, "Forgot-password baseline captured", current_sig
 
     if baseline_sig != current_sig:
-        return 40, f"Forgot-password page changed: {baseline_sig} -> {current_sig}"
+        return 40, f"Forgot-password page changed!", current_sig
 
-    return 0, "Forgot-password page unchanged"
+    return 0, "Forgot-password page unchanged", current_sig
 
 
 def layer_post_probe(baseline_post_sig):
@@ -525,6 +528,9 @@ def run_check(state, sound_enabled=True):
         _, post_msg, post_sig = layer_post_probe(None)
         log(f"  {post_msg}")
         state["baseline_post_sig"] = list(post_sig) if post_sig else None
+        _, _, fp_sig = layer_forgot_password_content(current_skel, current_skel, None)
+        state["baseline_fp_sig"] = fp_sig
+        
         save_state(state)
         return False
 
@@ -554,12 +560,14 @@ def run_check(state, sound_enabled=True):
     layers.append(("PostProbe", score6, msg6))
     score7, msg7 = layer_forgot_password_link(baseline_skel, current_skel)
     layers.append(("ForgotLink", score7, msg7))
-    score8, msg8 = layer_forgot_password_content(
+    score8, msg8, new_fp_sig = layer_forgot_password_content(
             baseline_skel,
             current_skel,
             state.get("baseline_fp_sig") #FIX: Use the permanent JSON memory
         )
     layers.append(("ForgotPage", score8, msg8))
+    state["baseline_fp_sig"] = new_fp_sig
+
 
 
 
