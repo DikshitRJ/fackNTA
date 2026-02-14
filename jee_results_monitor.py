@@ -517,18 +517,27 @@ def run_check(state, sound_enabled=True):
     
 
     # 3) Baseline handling
+        # 3) Baseline handling
     if state["baseline_skeleton"] is None:
         log(f"First run — capturing baseline (hash: {current_hash})")
         state["baseline_skeleton"] = current_skel
         state["baseline_hash"] = current_hash
-        # Also capture POST baseline
-        _, post_msg, post_sig = layer_post_probe(None)
-        log(f"  {post_msg}")
-        state["baseline_post_sig"] = list(post_sig) if post_sig else None
+        
+        # ... existing post probe capture ...
+
+        # START MISSING CODE
+        baseline_fp_sig = None
+        for a in current_skel.get("anchors", []):
+            t = a.get("text","").lower()
+            if "forgot" in t and "password" in t:
+                baseline_fp_sig = get_response_signature(a["href"])
+                break
+        state["baseline_fp_sig"] = baseline_fp_sig
+        # END MISSING CODE
+        
         save_state(state)
         return False
 
-    baseline_skel = state["baseline_skeleton"]
 
 
     # 4) Run all detection layers
@@ -759,4 +768,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
